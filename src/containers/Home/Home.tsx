@@ -38,7 +38,7 @@ const Home = () => {
             <p className='card-text'>Total calories: {totalCalories}</p>
             <button
                 className='btn btn-primary mb-3'
-                onClick={() => navigate('/meals/newMeal')}
+                onClick={() => navigate('/meals/new')}
             >Add new meal</button>
 
             {loading && (
