@@ -29,6 +29,18 @@ const Home = () => {
         showMeals();
     }, []);
 
+    const deleteMeal = async (id: string) => {
+        try {
+            setLoading(true);
+            await axiosApi.delete(`/meals/${id}.json`);
+            setMeals(prev => prev.filter(meal => meal.id !== id));
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
 
     return (
@@ -64,7 +76,11 @@ const Home = () => {
                                             className='btn btn-primary mb-2'
                                             onClick={() => navigate(`/meals/edit/${meal.id}`)}
                                         >Edit</button>
-                                        <button type='button' className='btn btn-warning'>Delete</button>
+                                        <button
+                                            type='button'
+                                            className='btn btn-warning'
+                                            onClick={() => deleteMeal(meal.id)}
+                                        >Delete</button>
                                     </div>
                                 </div>
                             </div>
