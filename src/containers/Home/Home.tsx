@@ -59,7 +59,11 @@ const Home = () => {
                                         <h3 className='card-title'>{meal.type}</h3>
                                         <p className="card-text">{meal.description}</p>
                                         <p className="card-text">Calories: {meal.calories}</p>
-                                        <button type='button' className='btn btn-primary mb-2'>Edit</button>
+                                        <button
+                                            type='button'
+                                            className='btn btn-primary mb-2'
+                                            onClick={() => navigate(`/meals/edit/${meal.id}`)}
+                                        >Edit</button>
                                         <button type='button' className='btn btn-warning'>Delete</button>
                                     </div>
                                 </div>

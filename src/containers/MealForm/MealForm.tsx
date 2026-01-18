@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {Meal} from "../../types";
 import axiosApi from "../../axiosAPI.ts";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const MealForm = () => {
     const [meal, setMeal] = useState<Meal>({
@@ -13,13 +13,19 @@ const MealForm = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const {id} = useParams<{ id: string }>();
+
     const formSend = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
             setLoading(true);
-            await axiosApi.post("/meals.json", meal);
-            navigate("/");
+            if (id) {
+                await axiosApi.put(`/meals/${id}.json`, meal);
+            } else {
+                await axiosApi.post("/meals.json", meal);
+                navigate("/");
+            }
         } catch (e) {
             console.error(e);
         } finally {
@@ -45,9 +51,27 @@ const MealForm = () => {
         });
     };
 
+    useEffect(() => {
+        const getInfoForChanges = async () => {
+            if (!id) return;
+            try {
+                setLoading(true);
+                const res = await axiosApi.get(`/meals/${id}.json`);
+                if (res.data) {
+                    setMeal(res.data);
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoading(false);
+            }
+        };
+        getInfoForChanges();
+    }, [id]);
+
     return (
         <div className='container'>
-            <h2>Add new meal</h2>
+            <h2>{id ? "Edit meal" : "Add new meal"}</h2>
 
             {loading && (
                 <div className="text-center my-3">
@@ -93,7 +117,7 @@ const MealForm = () => {
                     required
                 />
 
-                <button className="btn btn-primary" type="submit">Save</button>
+                <button className="btn btn-primary" type="submit">{id ? "Save changes" : "Add new meal"}</button>
             </form>
         </div>
     );
